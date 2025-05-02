@@ -1,0 +1,25 @@
+.container {
+  background: #ffebee;
+  transition: all 0.3s ease;
+}
+
+.active {
+  background: #ffcdd2;
+}
+
+.triggerButton {
+  width: 100%;
+  padding: 1rem;
+  background: #f44336;
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.protocols {
+  padding: 1rem;
+  margin-top: 0.5rem;
+  background: white;
+  border-radius: 4px;
+}

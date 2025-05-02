@@ -1,0 +1,15 @@
+.container {
+  background: #e8f5e9;
+}
+
+.taskList {
+  list-style: none;
+  padding: 0;
+}
+
+.taskList li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #c8e6c9;
+}

@@ -1,0 +1,127 @@
+/* Base Container Styles */
+.display-board {
+  width: 100%;
+  height: 100vh;
+  background-color: #f0f2f5; /* Lighter, modern background */
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* Title Styles */
+.display-board__title {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Content Area */
+.display-board__content {
+  flex: 1;
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+}
+
+/* Placeholder State */
+.display-board__placeholder {
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 1.5rem;
+  line-height: 1.6;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dashboard Grid Layout */
+.dashboard-layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Dashboard Rows */
+.dashboard-top-row,
+.dashboard-middle-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  min-height: 30vh;
+}
+
+.dashboard-bottom-row {
+  flex: 1;
+}
+
+/* Panel Container */
+.dashboard-card {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid #eaeaea;
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* Panel-specific accent colors */
+.dashboard-card:nth-child(1) { border-top: 4px solid #3498db; } /* Attendance */
+.dashboard-card:nth-child(2) { border-top: 4px solid #2ecc71; } /* Tasks */
+.dashboard-card:nth-child(3) { border-top: 4px solid #f39c12; } /* Safety */
+.dashboard-card:nth-child(4) { border-top: 4px solid #9b59b6; } /* Progress */
+.dashboard-card:nth-child(5) { border-top: 4px solid #e74c3c; } /* Emergency */
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .display-board__title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-top-row,
+  .dashboard-middle-row {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  
+  .dashboard-card {
+    min-height: 200px;
+  }
+  
+  .display-board__title {
+    font-size: 1.8rem;
+  }
+  
+  .display-board__placeholder {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .display-board {
+    padding: 10px;
+  }
+  
+  .display-board__content {
+    padding: 10px;
+  }
+}
