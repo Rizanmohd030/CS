@@ -1,5 +1,5 @@
 import React from 'react';
-import Home from './pages/Home.js'; // Assuming Home.js is in /src/pages
+import Home from './pages/Home/Home'; // Assuming Home.js is in /src/pages
 import './App.css';
 
 function App() {
