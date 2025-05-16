@@ -1,6 +1,6 @@
 /* ========== Root Variables ========== */
 :root {
-  --primary-color: #3498db;
+  --primary-color: #2c72a1;
   --dark-bg: #2c3e50;
   --light-bg: #f5f7fa;
   --text-light: #ecf0f1;
@@ -61,7 +61,19 @@ html {
   flex-grow: 1;
   justify-content: center;
 }
+.header-content {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+  justify-content: center; /* or space-between, flex-start, etc. */
+  color: white;
+}
 
+.header-content li {
+  margin: 0 15px;
+}
 .nav-menu {
   display: flex;
   list-style: none;

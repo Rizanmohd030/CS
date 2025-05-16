@@ -124,60 +124,100 @@ function Home() {
       <header className={styles.appHeader}>
         <div className={styles.headerContent}>
           <h1 className={styles.appTitle}>Construction AI</h1>
-          
-          <nav className={styles.desktopNav}>
-            <ul className={styles.navMenu}>
-              {menuItems.map(item => (
-                <li 
-                  key={item.id} 
-                  className={`${styles.navItemWrapper} ${item.id === 'dashboard' ? styles.dashboardContainer : ''}`}
-                >
-                  {item.id === 'dashboard' ? (
-                    <>
+          <div className={styles.headerContainer} style={{ backgroundColor: '#e6f7ff', padding: '10px 20px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+  <nav className={styles.horizontalNav}>
+    <ul className={styles.horizontalNavMenu} style={{ display: 'flex', listStyle: 'none', margin: 0, padding: 0, gap: '20px' }}>
+      {menuItems.map(item => (
+        <li 
+          key={item.id} 
+          className={styles.horizontalNavItem}
+          style={{ position: 'relative' }}
+        >
+          {item.id === 'dashboard' ? (
+            <>
+              <button
+                className={`${styles.horizontalNavButton} ${activeTab.startsWith('dashboard') ? styles.active : ''}`}
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '8px', 
+                  padding: '8px 16px',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  borderRadius: '4px',
+                  fontSize: '16px'
+                }}
+                onClick={toggleDashboard}
+                aria-expanded={isDashboardOpen}
+                aria-haspopup="true"
+              >
+                {item.icon}
+                <span>{item.label}</span>
+                <FiChevronDown className={`${styles.dropdownIcon} ${isDashboardOpen ? styles.rotate : ''}`} />
+              </button>
+              
+              {isDashboardOpen && (
+                <ul className={styles.dropdownMenu} style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  backgroundColor: '#fff',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  padding: '8px 0',
+                  zIndex: 100,
+                  minWidth: '200px'
+                }}>
+                  {dashboardItems.map(subItem => (
+                    <li key={subItem.id} style={{ listStyle: 'none' }}>
                       <button
-                        className={`${styles.navItem} ${activeTab.startsWith('dashboard') ? styles.active : ''}`}
-                        onClick={toggleDashboard}
-                        aria-expanded={isDashboardOpen}
-                        aria-haspopup="true"
+                        className={`${styles.dropdownItem} ${activeTab === subItem.id ? styles.activeSubItem : ''}`}
+                        style={{
+                          width: '100%',
+                          textAlign: 'left',
+                          padding: '8px 16px',
+                          border: 'none',
+                          backgroundColor: 'transparent',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => {
+                          setActiveTab(subItem.id);
+                          setIsDashboardOpen(false);
+                        }}
                       >
-                        {item.icon}
-                        <span>{item.label}</span>
-                        <FiChevronDown className={`${styles.dropdownIcon} ${isDashboardOpen ? styles.rotate : ''}`} />
+                        {subItem.label}
                       </button>
-                      
-                      {isDashboardOpen && (
-                        <ul className={styles.dropdownMenu} role="menu">
-                          {dashboardItems.map(subItem => (
-                            <li key={subItem.id} role="none">
-                              <button
-                                role="menuitem"
-                                className={`${styles.dropdownItem} ${activeTab === subItem.id ? styles.activeSubItem : ''}`}
-                                onClick={() => {
-                                  setActiveTab(subItem.id);
-                                  setIsDashboardOpen(false);
-                                }}
-                              >
-                                {subItem.label}
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </>
-                  ) : (
-                    <button
-                      className={`${styles.navItem} ${activeTab === item.id ? styles.active : ''}`}
-                      onClick={() => setActiveTab(item.id)}
-                    >
-                      {item.icon}
-                      <span>{item.label}</span>
-                    </button>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </nav>
-
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
+          ) : (
+            <button
+              className={`${styles.horizontalNavButton} ${activeTab === item.id ? styles.active : ''}`}
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '8px', 
+                padding: '8px 16px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                borderRadius: '4px',
+                fontSize: '16px'
+              }}
+              onClick={() => setActiveTab(item.id)}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </button>
+          )}
+        </li>
+      ))}
+    </ul>
+  </nav>
+</div>
           <button 
             className={styles.mobileMenuButton} 
             onClick={toggleMobileMenu}
