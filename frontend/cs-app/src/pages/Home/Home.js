@@ -45,11 +45,11 @@ function Home() {
 
   // Dashboard sub-items
   const dashboardItems = [
-    { id: 'attendance', label: 'Attendance' },
-    { id: 'tasks', label: 'Task Management' },
-    { id: 'safety', label: 'Safety Alerts' },
-    { id: 'progress', label: 'Progress Tracker' },
-    { id: 'emergency', label: 'Emergency Protocols' }
+    { id: 'attendance', label: 'Attendance', icon: <FiUsers /> },
+    { id: 'tasks', label: 'Task Management', icon: <FiCalendar /> },
+    { id: 'safety', label: 'Safety Alerts', icon: <FiAlertTriangle /> },
+    { id: 'progress', label: 'Progress Tracker', icon: <FiCalendar /> },
+    { id: 'emergency', label: 'Emergency Protocols', icon: <FiAlertTriangle /> }
   ];
 
   // Demo data fallback
@@ -86,9 +86,10 @@ function Home() {
   }, []);
 
   // Toggle dashboard dropdown
-  const toggleDashboard = () => {
-    setIsDashboardOpen(!isDashboardOpen);
-  };
+const toggleDashboard = (e) => {
+  e.stopPropagation(); // Prevent the event from bubbling up
+  setIsDashboardOpen(!isDashboardOpen);
+};
 
   // Close dropdown when clicking elsewhere
   useEffect(() => {
@@ -119,105 +120,75 @@ function Home() {
   // Get current data (API or fallback)
   const currentData = constructionData || demoData;
 
+  // Handle tab change
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    setIsDashboardOpen(false);
+    setMobileMenuOpen(false);
+  };
+
   return (
     <div className={styles.appContainer}>
       <header className={styles.appHeader}>
         <div className={styles.headerContent}>
           <h1 className={styles.appTitle}>Construction AI</h1>
-          <div className={styles.headerContainer} style={{ backgroundColor: '#e6f7ff', padding: '10px 20px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-  <nav className={styles.horizontalNav}>
-    <ul className={styles.horizontalNavMenu} style={{ display: 'flex', listStyle: 'none', margin: 0, padding: 0, gap: '20px' }}>
-      {menuItems.map(item => (
-        <li 
-          key={item.id} 
-          className={styles.horizontalNavItem}
-          style={{ position: 'relative' }}
+          <div className={styles.headerContainer}>
+            <nav className={styles.horizontalNav}>
+              <ul className={styles.horizontalNavMenu}>
+                {menuItems.map(item => (
+                  <li key={item.id} className={styles.horizontalNavItem}>
+                    {item.id === 'dashboard' ? (
+                      <div className={styles.dashboardContainer}>
+                       <button
+  className={`${styles.horizontalNavButton} ${activeTab.startsWith('dashboard') ? styles.active : ''}`}
+  onClick={(e) => {
+    e.stopPropagation();
+    toggleDashboard(e);
+  }}
+  aria-expanded={isDashboardOpen}
+  aria-haspopup="true"
+>
+  {item.icon}
+  <span>{item.label}</span>
+  <FiChevronDown className={`${styles.dropdownIcon} ${isDashboardOpen ? styles.rotate : ''}`} />
+</button>
+                        
+                        {isDashboardOpen && (
+  <ul className={styles.dropdownMenu}>
+    {dashboardItems.map(subItem => (
+      <li key={subItem.id}>
+        <button
+          className={`${styles.dropdownItem} ${activeTab === subItem.id ? styles.activeSubItem : ''}`}
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent event from reaching parent
+            setActiveTab(subItem.id); // Set the active tab
+            setIsDashboardOpen(false); // Close the dropdown
+          }}
         >
-          {item.id === 'dashboard' ? (
-            <>
-              <button
-                className={`${styles.horizontalNavButton} ${activeTab.startsWith('dashboard') ? styles.active : ''}`}
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '8px', 
-                  padding: '8px 16px',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  borderRadius: '4px',
-                  fontSize: '16px'
-                }}
-                onClick={toggleDashboard}
-                aria-expanded={isDashboardOpen}
-                aria-haspopup="true"
-              >
-                {item.icon}
-                <span>{item.label}</span>
-                <FiChevronDown className={`${styles.dropdownIcon} ${isDashboardOpen ? styles.rotate : ''}`} />
-              </button>
-              
-              {isDashboardOpen && (
-                <ul className={styles.dropdownMenu} style={{
-                  position: 'absolute',
-                  top: '100%',
-                  left: 0,
-                  backgroundColor: '#fff',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                  padding: '8px 0',
-                  zIndex: 100,
-                  minWidth: '200px'
-                }}>
-                  {dashboardItems.map(subItem => (
-                    <li key={subItem.id} style={{ listStyle: 'none' }}>
+          {subItem.icon}
+          <span>{subItem.label}</span>
+        </button>
+      </li>
+    ))}
+  </ul>
+)}
+                      </div>
+                    ) : (
                       <button
-                        className={`${styles.dropdownItem} ${activeTab === subItem.id ? styles.activeSubItem : ''}`}
-                        style={{
-                          width: '100%',
-                          textAlign: 'left',
-                          padding: '8px 16px',
-                          border: 'none',
-                          backgroundColor: 'transparent',
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => {
-                          setActiveTab(subItem.id);
-                          setIsDashboardOpen(false);
-                        }}
+                        className={`${styles.horizontalNavButton} ${
+                          activeTab === item.id ? styles.active : ''
+                        }`}
+                        onClick={() => handleTabChange(item.id)}
                       >
-                        {subItem.label}
+                        {item.icon}
+                        <span>{item.label}</span>
                       </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </>
-          ) : (
-            <button
-              className={`${styles.horizontalNavButton} ${activeTab === item.id ? styles.active : ''}`}
-              style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '8px', 
-                padding: '8px 16px',
-                backgroundColor: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                borderRadius: '4px',
-                fontSize: '16px'
-              }}
-              onClick={() => setActiveTab(item.id)}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </button>
-          )}
-        </li>
-      ))}
-    </ul>
-  </nav>
-</div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
           <button 
             className={styles.mobileMenuButton} 
             onClick={toggleMobileMenu}
@@ -251,17 +222,52 @@ function Home() {
           <div className={styles.mobileMenu}>
             <nav className={styles.mobileNavMenu}>
               {menuItems.map(item => (
-                <button
-                  key={item.id}
-                  className={`${styles.mobileMenuItem} ${activeTab === item.id ? styles.active : ''}`}
-                  onClick={() => {
-                    setActiveTab(item.id);
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  <span className={styles.menuIcon}>{item.icon}</span>
-                  <span className={styles.menuLabel}>{item.label}</span>
-                </button>
+                <div key={item.id}>
+                  {item.id === 'dashboard' ? (
+                    <>
+                      <button
+                        className={`${styles.mobileMenuItem} ${
+                          activeTab.startsWith('dashboard') || dashboardItems.some(d => d.id === activeTab)
+                            ? styles.active
+                            : ''
+                        }`}
+                        onClick={toggleDashboard}
+                      >
+                        <span className={styles.menuIcon}>{item.icon}</span>
+                        <span className={styles.menuLabel}>{item.label}</span>
+                        <FiChevronDown className={`${styles.dropdownIcon} ${isDashboardOpen ? styles.rotate : ''}`} />
+                      </button>
+                      
+                      {isDashboardOpen && (
+                        <div className={styles.mobileSubMenu}>
+                          {dashboardItems.map(subItem => (
+                            <button
+                              key={subItem.id}
+                              className={`${styles.mobileMenuItem} ${
+                                activeTab === subItem.id ? styles.active : ''
+                              }`}
+                              onClick={() => handleTabChange(subItem.id)}
+                              style={{ paddingLeft: '2rem' }}
+                            >
+                              <span className={styles.menuIcon}>{subItem.icon}</span>
+                              <span className={styles.menuLabel}>{subItem.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <button
+                      className={`${styles.mobileMenuItem} ${
+                        activeTab === item.id ? styles.active : ''
+                      }`}
+                      onClick={() => handleTabChange(item.id)}
+                    >
+                      <span className={styles.menuIcon}>{item.icon}</span>
+                      <span className={styles.menuLabel}>{item.label}</span>
+                    </button>
+                  )}
+                </div>
               ))}
             </nav>
           </div>

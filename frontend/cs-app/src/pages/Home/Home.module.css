@@ -7,6 +7,7 @@
   --danger-color: #e74c3c;
   --shadow-light: rgba(0, 0, 0, 0.1);
   --shadow-heavy: rgba(0, 0, 0, 0.2);
+  --accent-color: #24dbad;
 }
 
 /* ========== Base ========== */
@@ -21,16 +22,16 @@ html {
   font-family: system-ui, sans-serif;
 }
 
-.app-container {
+.appContainer {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
 /* ========== Header ========== */
-.app-header {
+.appHeader {
   background-color: var(--dark-bg);
-  color: rgb(219, 98, 98);
+  color: var(--accent-color);
   padding: 1rem 2rem;
   box-shadow: 0 2px 10px var(--shadow-light);
   position: sticky;
@@ -38,7 +39,7 @@ html {
   z-index: 1000;
 }
 
-.header-content {
+.headerContent {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -49,70 +50,110 @@ html {
   gap: 1rem;
 }
 
-.app-title {
+.appTitle {
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
+  color: var(--accent-color);
+}
+
+.headerContainer {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
 }
 
 /* ========== Navigation ========== */
-.desktop-nav {
+.horizontalNav {
   display: flex;
-  flex-grow: 1;
-  justify-content: center;
-}
-.header-content {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  align-items: center;
-  justify-content: center; /* or space-between, flex-start, etc. */
-  color: white;
 }
 
-.header-content li {
-  margin: 0 15px;
-}
-.nav-menu {
+.horizontalNavMenu {
   display: flex;
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
-.nav-item {
-  background: none;
-  border: none;
-  color: white;
+.horizontalNavItem {
+  position: relative;
+}
+
+.horizontalNavButton {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: background-color 0.3s;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  color: var(--accent-color);
+  transition: all 0.3s ease;
 }
 
-.nav-item:hover {
-  background-color: #34495e;
+.horizontalNavButton:hover {
+  background-color: rgba(36, 219, 173, 0.1);
 }
 
-.nav-item.active {
-  background-color: var(--primary-color);
+.horizontalNavButton.active {
+  background-color: rgba(36, 219, 173, 0.2);
+  font-weight: 600;
+}
+
+.dropdownIcon {
+  transition: transform 0.2s ease;
+  margin-left: 0.25rem;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 0.5rem 0;
+  min-width: 12rem;
+  z-index: 100;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--dark-bg);
+  transition: background-color 0.2s;
+}
+
+.dropdownItem:hover {
+  background-color: #f0f0f0;
+}
+
+.dropdownItem.activeSubItem {
+  background-color: #e0e0e0;
+  font-weight: 500;
 }
 
 /* ========== Auth Section ========== */
-.auth-section {
+.authSection {
   display: flex;
   gap: 1rem;
-  order: 3;
-  justify-content: flex-end;
-  width: 100%;
+  align-items: center;
 }
 
-.auth-button {
+.authButton {
   padding: 0.5rem 1rem;
   border-radius: 4px;
   border: none;
@@ -121,31 +162,33 @@ html {
   align-items: center;
   gap: 0.5rem;
   font-weight: 500;
+  transition: all 0.3s ease;
 }
 
-.login-button {
+.loginButton {
   background-color: var(--primary-color);
   color: white;
 }
 
-.signup-button {
+.signupButton {
   background-color: var(--text-light);
   color: var(--dark-bg);
 }
 
-.user-profile {
+.userProfile {
   display: flex;
   align-items: center;
   gap: 1rem;
+  color: var(--accent-color);
 }
 
-.welcome-message {
+.welcomeMessage {
   font-size: 0.9rem;
 }
 
-.logout-button {
+.logoutButton {
   background-color: var(--danger-color);
-  color: rgb(221, 77, 77);
+  color: white;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   border: none;
@@ -153,16 +196,17 @@ html {
 }
 
 /* ========== Mobile Menu ========== */
-.mobile-menu-button {
+.mobileMenuButton {
   display: none;
   background: none;
   border: none;
-  color: white;
+  color: var(--accent-color);
   font-size: 1.5rem;
   cursor: pointer;
+  padding: 0.5rem;
 }
 
-.mobile-menu {
+.mobileMenu {
   display: none;
   position: absolute;
   top: 100%;
@@ -171,18 +215,22 @@ html {
   background-color: var(--dark-bg);
   padding: 1rem;
   box-shadow: 0 5px 10px var(--shadow-heavy);
+  z-index: 999;
 }
 
-.mobile-nav-menu {
+.mobileNavMenu {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.mobile-menu-item {
+.mobileMenuItem {
   background: none;
   border: none;
-  color: white;
+  color: var(--accent-color);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -194,22 +242,31 @@ html {
   transition: background-color 0.3s;
 }
 
-.mobile-menu-item:hover {
-  background-color: #34495e;
+.mobileMenuItem:hover {
+  background-color: rgba(36, 219, 173, 0.1);
 }
 
-.mobile-menu-item.active {
-  background-color: var(--primary-color);
+.mobileMenuItem.active {
+  background-color: rgba(36, 219, 173, 0.2);
+  font-weight: 600;
+}
+
+.menuIcon {
+  font-size: 1.2rem;
+}
+
+.menuLabel {
+  font-size: 1rem;
 }
 
 /* ========== Main Content ========== */
-.main-content {
+.mainContent {
   flex: 1;
   padding: 2rem;
   background-color: var(--light-bg);
 }
 
-.content-container {
+.contentContainer {
   max-width: 1200px;
   margin: 0 auto;
   background-color: white;
@@ -218,14 +275,18 @@ html {
   padding: 2rem;
 }
 
+.tabContent {
+  padding: 1rem;
+}
+
 /* ========== Footer ========== */
-.app-footer {
+.appFooter {
   background-color: var(--dark-bg);
   color: white;
   padding: 2rem 0 0;
 }
 
-.footer-content {
+.footerContent {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
@@ -234,11 +295,11 @@ html {
   padding: 0 2rem;
 }
 
-.footer-section {
+.footerSection {
   margin-bottom: 2rem;
 }
 
-.footer-section h3 {
+.footerSection h3 {
   font-size: 1.2rem;
   margin-bottom: 1rem;
   border-bottom: 2px solid var(--primary-color);
@@ -246,45 +307,35 @@ html {
   display: inline-block;
 }
 
-.footer-section p {
+.footerSection p {
   margin: 0.5rem 0;
   line-height: 1.5;
 }
 
-.footer-section ul {
+.footerSection ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.footer-section ul li {
+.footerSection ul li {
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.footer-section a {
+.footerSection a {
   color: var(--text-light);
   text-decoration: none;
   transition: color 0.3s;
 }
 
-.footer-section a:hover {
-  color: var(--primary-color);
+.footerSection a:hover {
+  color: var(--accent-color);
 }
 
-.social-icons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.social-icons a {
-  font-size: 1.2rem;
-}
-
-.footer-bottom {
+.footerBottom {
   text-align: center;
   padding: 1rem;
   background-color: #1a252f;
@@ -293,23 +344,37 @@ html {
 
 /* ========== Responsive ========== */
 @media (max-width: 1024px) {
-  .desktop-nav {
+  .horizontalNav {
     display: none;
   }
 
-  .mobile-menu-button {
+  .mobileMenuButton {
     display: block;
   }
 
-  .mobile-menu {
+  .mobileMenu.open {
     display: block;
   }
 }
 
 @media (max-width: 768px) {
-  .auth-section {
+  .headerContent {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .appTitle {
+    margin-bottom: 1rem;
+  }
+
+  .headerContainer {
+    width: 100%;
     order: 3;
+  }
+
+  .authSection {
     width: 100%;
     justify-content: flex-end;
+    margin-top: 1rem;
   }
 }
