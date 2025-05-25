@@ -51,11 +51,19 @@ html {
 }
 
 .appTitle {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0;
-  color: var(--accent-color);
+  font-size: 1.8rem;
+  font-weight: bold;
+  /* color: #ffffff; */
+  cursor: pointer;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
+
+/* Glow effect when hovering */
+.appTitle:hover {
+  /* color: #ffffcc; */
+  text-shadow: 0 0 10px rgba(255, 255, 200, 0.9);
+}
+
 
 .headerContainer {
   padding: 1rem;
