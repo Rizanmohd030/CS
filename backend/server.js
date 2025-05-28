@@ -1,81 +1,111 @@
 // server.js
-const app = require('./app');
-const { getDB, closeDB, connectDB } = require('./config/db');
+require('dotenv').config();
+const express = require('express');
+const app = express();
+const { connectDB, getDB, closeDB } = require('./config/db');
+const routes = require('./routes');
+const { initializeRFIDService } = require('./services/rfid.service');
+const { initializeSocketService } = require('./services/socket.service');
+const errorHandler = require('./middleware/errorHandler');
+const logger = require('./utils/logger');
+const authRoutes = require('./routes/authRoutes');
+
 const PORT = process.env.PORT || 5000;
 
-// Initialize database connection first
-connectDB().catch(err => {
-  console.error('FATAL: Failed to connect to database:', err);
-  process.exit(1); // Exit if DB connection fails
-});
+// 1. Middleware Setup
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Enhanced DB attachment middleware
-app.use((req, res, next) => {
+if (process.env.NODE_ENV === 'development') {
+  const morgan = require('morgan');
+  app.use(morgan('dev'));
+}
+
+// 2. Database Connection Middleware
+app.use(async (req, res, next) => {
   try {
     req.db = getDB();
-    
-    // Debugging log (remove in production)
-    console.log('Database connection attached to request');
-    
+    logger.debug('Database connection attached to request');
     next();
   } catch (err) {
-    console.error('Database connection error:', err);
-    res.status(503).json({ 
-      error: 'Service unavailable - Database connection failed',
-      details: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
+    logger.error('Database connection error', { error: err.message });
+    next(new Error('Database connection unavailable'));
   }
 });
 
-// Start server with error handling
-let server;
-try {
-  server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on:
-    - Local: http://localhost:${PORT}
-    - Network: http://${require('os').networkInterfaces().eth0?.[0]?.address || 'localhost'}:${PORT}
-    - PID: ${process.pid}`);
-  });
-} catch (err) {
-  console.error('Server startup failed:', err);
-  process.exit(1);
-}
+// 3. Route Setup
+app.use('/api', routes);
+app.use('/api/auth', authRoutes);
 
-// Enhanced graceful shutdown
-const shutdown = async () => {
-  console.log('\nShutting down gracefully...');
-  
+// 4. Error Handling
+app.use(errorHandler);
+
+// 5. Server Initialization
+const startServer = async () => {
   try {
-    await closeDB();
-    console.log('Database connection closed');
-    
-    server.close(() => {
-      console.log('Server closed');
-      process.exit(0);
+    // Database Connection
+    await connectDB();
+    logger.info('Database connected successfully');
+
+    // Start HTTP Server
+    const server = app.listen(PORT, () => {
+      const address = server.address();
+      logger.info(`Server running on port ${PORT}`, {
+        pid: process.pid,
+        environment: process.env.NODE_ENV
+      });
+
+      // Initialize Additional Services
+      if (process.env.ENABLE_RFID === 'true') {
+        initializeRFIDService();
+        logger.info('RFID service initialized');
+      }
+
+      if (process.env.ENABLE_SOCKETS === 'true') {
+        initializeSocketService(server);
+        logger.info('Socket service initialized');
+      }
     });
-    
-    // Force shutdown if hanging
-    setTimeout(() => {
-      console.error('Forcing shutdown after timeout');
-      process.exit(1);
-    }, 5000);
+
+    // Graceful Shutdown
+    const shutdown = async (signal) => {
+      logger.info(`Received ${signal}, shutting down gracefully...`);
+      
+      try {
+        await closeDB();
+        server.close(() => {
+          logger.info('Server closed');
+          process.exit(0);
+        });
+
+        setTimeout(() => {
+          logger.error('Forcing shutdown after timeout');
+          process.exit(1);
+        }, 10000).unref();
+      } catch (err) {
+        logger.error('Shutdown error', { error: err.message });
+        process.exit(1);
+      }
+    };
+
+    process.on('SIGINT', () => shutdown('SIGINT'));
+    process.on('SIGTERM', () => shutdown('SIGTERM'));
+    process.on('uncaughtException', (err) => {
+      logger.error('Uncaught Exception', { error: err.message });
+      shutdown('uncaughtException');
+    });
+
+    process.on('unhandledRejection', (reason, promise) => {
+      logger.error('Unhandled Rejection', { 
+        promise: promise.toString(), 
+        reason: reason.message 
+      });
+    });
+
   } catch (err) {
-    console.error('Shutdown error:', err);
+    logger.error('Server startup failed', { error: err.message });
     process.exit(1);
   }
 };
 
-// Handle various shutdown signals
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
-process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
-  shutdown();
-});
-
-// Debugging events (optional)
-if (process.env.NODE_ENV === 'development') {
-  process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  });
-}
+startServer();
